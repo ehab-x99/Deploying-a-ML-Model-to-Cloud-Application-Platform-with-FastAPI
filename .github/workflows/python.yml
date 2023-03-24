@@ -28,3 +28,8 @@ jobs:
       with:
         heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
         heroku_app_name: "project3-app"
+        heroku_email: "ehabapple6@gmail.com"
+        
+    - name: Deploy to Heroku
+      run: |
+        git push https://github.com/ehab-x99/project-3.git HEAD:main
