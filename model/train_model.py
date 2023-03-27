@@ -3,7 +3,7 @@
 from sklearn.model_selection import train_test_split
 import logging
 from data import process_data
-from clean_data import load_data, cleaned_data
+from data import load_data
 from model_functions import train_model, \
     compute_model_metrics, model_predictions
 from joblib import dump

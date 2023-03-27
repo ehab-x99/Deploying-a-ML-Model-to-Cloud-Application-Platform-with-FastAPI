@@ -1,0 +1,62 @@
+from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import List
+from joblib import load
+from pandas import DataFrame
+import numpy as np
+from  main import app
+
+app = FastAPI()
+
+class User(BaseModel):
+    age: int
+    workclass: str
+    education: str
+    maritalStatus: str
+    occupation: str
+    relationship: str
+    race: str
+    sex: str
+    hoursPerWeek: int
+    nativeCountry: str
+
+@app.get("/")
+async def get_items():
+    return {"message": "Hello, welcome to our app!"}
+
+@app.post("/inferences")
+async def get_prediction(user_data: User):
+    model_object = load("model/model.joblib")
+    encoder = load("model/encoder.joblib")
+    lb = load("model/lb.joblib")
+
+    array = np.array([[
+                     user_data.age,
+                     user_data.workclass,
+                     user_data.education,
+                     user_data.maritalStatus,
+                     user_data.occupation,
+                     user_data.relationship,
+                     user_data.race,
+                     user_data.sex,
+                     user_data.hoursPerWeek,
+                     user_data.nativeCountry
+                     ]])
+
+    df_temp = DataFrame(data=array, columns=[
+        "age",
+        "workclass",
+        "education",
+        "marital-status",
+        "occupation",
+        "relationship",
+        "race",
+        "sex",
+        "hours-per-week",
+        "native-country",
+    ])
+
+    prediction = model_object.predict(encoder.transform(df_temp))
+    prediction = lb.inverse_transform(prediction)
+    
+    return {"prediction": prediction[0]}

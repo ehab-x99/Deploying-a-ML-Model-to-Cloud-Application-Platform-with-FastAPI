@@ -2,12 +2,12 @@ from typing import Literal
 from fastapi import FastAPI
 from pydantic import BaseModel
 from joblib import load
-
 from pandas.core.frame import DataFrame
 import numpy as np
 from model import model_functions
 from model import data
 import os
+
 
 if "DYNO" in os.environ and os.path.isdir(".dvc"):
     os.system("dvc config core.no_scm true")
@@ -24,8 +24,7 @@ cat_features = [
     "race",
     "sex",
     "native-country",
-    ]
-
+]
 
 class User(BaseModel):
     age: int
@@ -63,8 +62,9 @@ class User(BaseModel):
         'Dominican-Republic', 'El-Salvador', 'France', 'Guatemala',
         'Italy', 'China', 'South', 'Japan', 'Yugoslavia', 'Peru',
         'Outlying-US(Guam-USVI-etc)', 'Scotland', 'Trinadad&Tobago',
-        'Greece', 'Nicaragua', 'Vietnam', 'Hong', 'Ireland', 'Hungary',
-        'Holand-Netherlands']
+        'Greece', 'Nicaragua', 'Vietnam', 'Hong', 'Ireland', 'Hung'
+        ]
+
 
 
 app = FastAPI()
@@ -73,6 +73,8 @@ app = FastAPI()
 @app.get("/")
 async def get_items():
     return {"message": "Hello, welcome to our app!"}
+
+
 
 
 @app.post("/")
@@ -113,3 +115,5 @@ async def inferences(user_data: User):
     pred = model_functions.inference(model_object, X)
     y = lb.inverse_transform(pred)[0]
     return {"prediction": y}
+
+
