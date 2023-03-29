@@ -1,16 +1,16 @@
 # Model Card
 Original paper introducing the concept of model card canbe found here: https://arxiv.org/pdf/1810.03993.pdf
 ## Model Details
-Hyacinth K. Ampadu created the model. It is Random forest using the default hyperparameters in scikit-learn 0.24.2.
+This model is a random forest implementation using default hyperparameters in scikit-learn 0.24.2, and was implemented by Ehab Osama.
 ## Intended Use
-This model should be used to predict if individuals make income above 50k dollars a year or below 50K dollars per year based off a handful of attributes.
+The intended use of this model is to predict whether an individual earns more or less than 50,000 dollars per year based on a few attributes.
 ## Training Data
-The training data comprised of 80% of the original data. The target class the salary, in 2 categories, salaries over 50K dollars, and salaries below 50K dollars. Training data was one hot encoded and label binarized.
+The training data used in this model comprised 80% of the original data. The target variable is salary, which was divided into two categories: salaries over 50K dollars and salaries below 50K dollars. The data was one-hot encoded and label binarized.
 ## Evaluation Data
-Evaluation data comprised same parameters as training data, having the remaining 20% of the original data. It was one hot encoded, but no label binarization done.
+The evaluation data used in this model comprised the remaining 20% of the original data, and had the same attributes as the training data. The data was one-hot encoded but was not label binarized.
 ## Metrics
-The model was evaluated using F1 score, precision and recall. The value of precision was 0.7454, recall was 0.615 and f1 score was 0.6739
+The model was evaluated using F1 score, precision, and recall. The precision value was 0.7454, the recall value was 0.615, and the F1 score was 0.6739.
 ## Ethical Considerations
-The Dataset has data containing race and gender, which could potentially discriminate against individuals in such brackets, hence a more deep dive into this may be neccesary
+The dataset used in this model contains information on race and gender, which could lead to discrimination against individuals belonging to certain groups. Therefore, a more in-depth analysis of the data may be necessary.
 ## Caveats and Recommendations
-Given some countries have much more data than other countries, more work needs to be done to capture more of such underrepresented countries to result in a more fair model
+Since some countries have more data than others, further work needs to be done to collect data from underrepresented countries to create a more equitable model.
