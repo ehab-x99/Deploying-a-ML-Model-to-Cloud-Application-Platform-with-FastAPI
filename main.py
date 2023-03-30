@@ -1,84 +1,23 @@
-from typing import Literal
-from fastapi import FastAPI
-from pydantic import BaseModel
+
+from flask import Flask, request, jsonify
+from main_api import app
 from joblib import load
 from pandas.core.frame import DataFrame
 import numpy as np
 from model import model_functions
 from model import data
-import os
+from main_api import User
+from main_api import cat_features
 
 
-if "DYNO" in os.environ and os.path.isdir(".dvc"):
-    os.system("dvc config core.no_scm true")
-    if os.system("dvc pull") != 0:
-        exit("dvc pull failed")
-    os.system("rm -r .dvc .apt/usr/lib/dvc")
+app = Flask(__name__)
 
-cat_features = [
-    "workclass",
-    "education",
-    "marital-status",
-    "occupation",
-    "relationship",
-    "race",
-    "sex",
-    "native-country",
-]
-
-class User(BaseModel):
-    age: int
-    workclass: Literal[
-        'State-gov', 'Self-emp-not-inc', 'Private', 'Federal-gov',
-        'Local-gov', 'Self-emp-inc', 'Without-pay']
-    education: Literal[
-        'Bachelors', 'HS-grad', '11th', 'Masters', '9th',
-        'Some-college',
-        'Assoc-acdm', '7th-8th', 'Doctorate', 'Assoc-voc', 'Prof-school',
-        '5th-6th', '10th', 'Preschool', '12th', '1st-4th']
-    maritalStatus: Literal[
-        'Never-married', 'Married-civ-spouse', 'Divorced',
-        'Married-spouse-absent', 'Separated', 'Married-AF-spouse',
-        'Widowed']
-    occupation: Literal[
-        'Adm-clerical', 'Exec-managerial', 'Handlers-cleaners',
-        'Prof-specialty', 'Other-service', 'Sales', 'Transport-moving',
-        'Farming-fishing', 'Machine-op-inspct', 'Tech-support',
-        'Craft-repair', 'Protective-serv', 'Armed-Forces',
-        'Priv-house-serv']
-    relationship: Literal[
-        'Not-in-family', 'Husband', 'Wife', 'Own-child',
-        'Unmarried', 'Other-relative']
-    race: Literal[
-        'White', 'Black', 'Asian-Pac-Islander', 'Amer-Indian-Eskimo',
-        'Other']
-    sex: Literal['Male', 'Female']
-    hoursPerWeek: int
-    nativeCountry: Literal[
-        'United-States', 'Cuba', 'Jamaica', 'India', 'Mexico',
-        'Puerto-Rico', 'Honduras', 'England', 'Canada', 'Germany', 'Iran',
-        'Philippines', 'Poland', 'Columbia', 'Cambodia', 'Thailand',
-        'Ecuador', 'Laos', 'Taiwan', 'Haiti', 'Portugal',
-        'Dominican-Republic', 'El-Salvador', 'France', 'Guatemala',
-        'Italy', 'China', 'South', 'Japan', 'Yugoslavia', 'Peru',
-        'Outlying-US(Guam-USVI-etc)', 'Scotland', 'Trinadad&Tobago',
-        'Greece', 'Nicaragua', 'Vietnam', 'Hong', 'Ireland', 'Hung'
-        ]
-
-
-
-app = FastAPI()
-
-
-@app.get("/")
-async def get_items():
+@app.route('/', methods=['GET'])
+def get_items():
     return {"message": "Hello, welcome to our app!"}
 
-
-
-
-@app.post("/")
-async def inferences(user_data: User):
+@app.route('/dan', methods=['POST'])
+def inferences(user_data: User):
     model_object = load("model/model.joblib")
     encoder = load("model/encoder.joblib")
     lb = load("model/lb.joblib")
@@ -116,4 +55,5 @@ async def inferences(user_data: User):
     y = lb.inverse_transform(pred)[0]
     return {"prediction": y}
 
-
+if __name__ == '__main__':
+    app.run(debug=True)
