@@ -21,11 +21,10 @@ jobs:
         pip install -r requirements.txt
     - name: Lint with flake8
       run: |
-        pip install flake8
+          flake8 . --count --show-source --statistics
     - name: Test with pytest
       run: |
-        pip install pytest
-        pytest
+          pytest
     - name: Deploy to Heroku
       env:
         HEROKU_API_TOKEN: ${{ secrets.HEROKU_API_TOKEN }}
