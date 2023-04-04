@@ -77,7 +77,7 @@ async def get_items():
 
 
 
-@app.post("/")
+@app.post("/dani")
 async def inferences(user_data: User):
     model_object = load("model/model.joblib")
     encoder = load("model/encoder.joblib")

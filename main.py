@@ -8,7 +8,7 @@ from model import model_functions
 from model import data
 from main_api import User
 from main_api import cat_features
-
+import asyncio
 
 app = Flask(__name__)
 
@@ -16,11 +16,11 @@ app = Flask(__name__)
 def get_items():
     return {"message": "Hello, welcome to our app!"}
 
-@app.route('/dan', methods=['POST'])
-def inferences(user_data: User):
-    model_object = load("model/model.joblib")
-    encoder = load("model/encoder.joblib")
-    lb = load("model/lb.joblib")
+@app.route('/', methods=['POST'])
+async def inferences(user_data: User):
+    model_object = await asyncio.to_thread(load, "model/model.joblib")
+    encoder = await asyncio.to_thread(load, "model/encoder.joblib")
+    lb = await asyncio.to_thread(load, "model/lb.joblib")
 
     array = np.array([[
                      user_data.age,
@@ -47,11 +47,11 @@ def inferences(user_data: User):
         "hours-per-week",
         "native-country",
     ])
-    X, _, _, _ = data.process_data(
+    X, _, _, _ = await asyncio.to_thread(data.process_data,
         df_temp,
         categorical_features=cat_features,
         encoder=encoder, lb=lb, training=False)
-    pred = model_functions.inference(model_object, X)
+    pred = await asyncio.to_thread(model_functions.inference, model_object, X)
     y = lb.inverse_transform(pred)[0]
     return {"prediction": y}
 
