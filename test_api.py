@@ -74,3 +74,6 @@ def test_post_malformed(client):
         "race": "Black",
         "sex": "Male",
         "hoursPerWeek": 60,
+        "nativeCountry": "United-States"
+    })
+    r.status_code != 200
