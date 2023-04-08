@@ -1,79 +1,70 @@
-import pytest
-from fastapi.testclient import TestClient
-from main_api import app
+"""
+A set of 3 functions defined to test the API Get/Post functionalities
+"""
+import json
+from starlette.testclient import TestClient
+from main import app
 
-@pytest.fixture
-def client():
-    """
-    Get dataset
-    """
-    api_client = TestClient(app)
-    return api_client
-
-def test_get(client):
-    r = client.get("/")
-    assert r.status_code == 200
-    assert r.json() == {"message": "Hello, welcome to our app!"}
+client = TestClient(app)
 
 
-def test_get_malformed(client):
-    r = client.get("/wrong_url")
-    assert r.status_code != 200
+# A function to test the get
+def test_get():
+    response = client.get("/welcome")
+    assert response.status_code == 200
+    assert response.json() == {"Hello, welcome to our app!"}
 
-def test_post_above(client):
-    r = client.post("/", json={
-        "age": 60,
-        "workclass": "Private",
-        "education": "Doctorate",
-        "maritalStatus": "Divorced",
-        "occupation": "Transport-moving",
-        "relationship": "Not-in-family",
+
+# A function to test the post on a predicted value of Salary <50K
+def test_post_1():
+    input_dict = {
+        "age": 25,
+        "workclass": "Self-emp-not-inc",
+        "fnlgt": 176756,
+        "education": "HS-grad",
+        "education_num": 9,
+        "marital_status": "Never-married",
+        "occupation": "Farming-fishing",
+        "relationship": "Own-child",
         "race": "White",
         "sex": "Male",
-        "hoursPerWeek": 76,
-        "nativeCountry": "United-States"
-    })
-    if r.status_code == 200 and r.json() == {"prediction": "<=50K"}:
-        json_data = r.json()  # Get the JSON data from the response
-        print(json_data,"done") 
-
-    else:
-        print ("the code error in above")
-
-
-
-def test_post_below(client):
-    r = client.post("/", json={
-        "age": 16,
-        "workclass": "Private",
-        "education": "HS-grad",
-        "maritalStatus": "Never-married",
-        "occupation": "Other-service",
-        "relationship": "Own-child",
-        "race": "Black",
-        "sex": "Male",
-        "hoursPerWeek": 40,
-        "nativeCountry": "United-States"
-    })
-    if r.status_code == 200 and r.json() == {"prediction": "<=50K"}:
-        json_data = r.json()  # Get the JSON data from the response
-        print(json_data,"done") 
-    else:
-        print ("the code error in below")
+        "capital_gain": 0,
+        "capital_loss": 0,
+        "hours_per_week": 35,
+        "native_country": "United-States"
+    }
+    response = client.post("/predict", json=input_dict)
+    assert response.status_code == 200
+    print(response.json())
+    assert response.json() == {'prediction': 'Income < 50k'}
+    #assert json.loads(response.text)["prediction"] == "Income < 50k"
 
 
-
-def test_post_malformed(client):
-    r = client.post("/", json={
-        "age": 32,
-        "workclass": "Private",
-        "education": "Some-college",
-        "maritalStatus": "ERROR",
-        "occupation": "Exec-managerial",
+# A function to test the post on a predicted value of Salary>50K
+def test_post_2():
+    input_dict = {
+        "age": 57,
+        "workclass": "Federal-gov",
+        "fnlgt": 337895,
+        "education": "Bachelors",
+        "education_num": 13,
+        "marital_status": "Married-civ-spouse",
+        "occupation": "Prof-specialty",
         "relationship": "Husband",
         "race": "Black",
-        "sex": "Male",
-        "hoursPerWeek": 60,
-        "nativeCountry": "United-States"
-    })
-    r.status_code != 200
+        "sex": "Female",
+        "capital_gain": 0,
+        "capital_loss": 0,
+        "hours_per_week": 40,
+        "native_country": "United-States"
+    }
+    response = client.post("/predict", json=input_dict)
+    assert response.status_code == 200
+    print(response.json())
+    assert response.json() == {'prediction': 'Income > 50k'}
+
+
+if __name__ == "__main__":
+    test_get()
+    test_post_1()
+    test_post_2()
