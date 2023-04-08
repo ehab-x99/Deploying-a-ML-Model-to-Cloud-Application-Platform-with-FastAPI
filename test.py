@@ -3,8 +3,8 @@ import pandas as pd
 import os
 import sklearn
 from sklearn.model_selection import train_test_split
-from starter.starter.ml.data import process_data
-from starter.starter.ml.model import train_model, compute_model_metrics, inference
+from starter.ml.data import process_data
+from starter.ml.model import train_model, compute_model_metrics, inference
 
 # load the data.
 data = pd.read_csv(os.path.join(os.getcwd(), "project-3/data/census.csv"))
@@ -32,8 +32,9 @@ X_train, y_train, encoder, lb = process_data(
 def test_train_model():
     # Tests that this function returns a trained RandomForest Classifier
     model = train_model(X_train, y_train)
-    assert type(model) == sklearn.ensemble._forest.RandomForestClassifier
+    assert isinstance(model, sklearn.ensemble._forest.RandomForestClassifier)
     print('Test train_model PASSED')
+
 
 def test_compute_model_metrics():
     # Tests that the compute_model_metrics() function returns three metrics
@@ -41,9 +42,9 @@ def test_compute_model_metrics():
     preds = inference(model, X_train)
     metrics = compute_model_metrics(y_train, preds)
     assert len(metrics) == 3
-    assert type(metrics) == tuple
+    assert isinstance(metrics, tuple)
     for metric in metrics:
-        assert metric >= 0 and metric <= 1
+        assert 0 <= metric <= 1
 
     print('Test compute_model_metrics PASSED')
 
