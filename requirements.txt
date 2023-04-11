@@ -10,3 +10,4 @@ gunicorn
 flake8
 imblearn
 flask
+starter==0.4.2
