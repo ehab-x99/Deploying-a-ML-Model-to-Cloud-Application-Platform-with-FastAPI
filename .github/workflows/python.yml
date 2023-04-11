@@ -24,7 +24,7 @@ jobs:
           pip install flake8
     - name: Test with pytest
       run: |
-          pytest test_api.py
+          pytest 
           pytest unit_test.py
     - name: Deploy to Heroku
       env:
