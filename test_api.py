@@ -19,7 +19,7 @@ def test_get(client):
 def test_get_malformed(client):
     r = client.get("/wrong_url")
     assert r.status_code != 200
-
+#This Function Tests For data Above 50k
 def test_post_above(client):
     r = client.post("/", json={
         "age": 60,
@@ -33,7 +33,7 @@ def test_post_above(client):
         "hoursPerWeek": 76,
         "nativeCountry": "United-States"
     })
-    if r.status_code == 200 and r.json() == {"prediction": "<=50K"}:
+    if r.status_code == 200 and r.json() == {"prediction": ">50K"}:
         json_data = r.json()  # Get the JSON data from the response
         print(json_data,"done") 
 
@@ -41,7 +41,7 @@ def test_post_above(client):
         print ("the code error in above")
 
 
-
+#This Function Tests For data Below 50k
 def test_post_below(client):
     r = client.post("/", json={
         "age": 16,
